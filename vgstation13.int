@@ -1,0 +1,14 @@
+// BEGIN_INTERNALS
+/*
+MAP_PLANE_MASTERS: 
+MAP_ZOOM: 1.000
+LAST_COMPILE_TIME: 1737394969
+DIR: code\datums code\game code\game\gamemodes code\game\gamemodes\events code\game\gamemodes\events\holidays code\game\objects code\game\objects\items code\game\objects\structures code\game\objects\structures\barsigns code\game\verbs code\modules code\modules\admin 
+AUTO_FILE_DIR: OFF
+MAP_ICON_TYPE: 0
+LAST_COMPILE_VERSION: 515.1647
+WINDOW: code\game\objects\items\plushies.dm;__DEFINES\setup.dm;code\datums\datumvars.dm;code\game\gamemodes\events\holidays\Holidays.dm;code\game\objects\structures\barsigns\paradise.dm;code\game\verbs\ooc.dm;code\modules\admin\admin.dm;__DEFINES\__compile_options.dm
+FILE: __DEFINES\__compile_options.dm
+MAP_INSTANCE_MODE: copy
+*/
+// END_INTERNALS
