@@ -1,0 +1,85 @@
+/mob/living
+	see_invisible = SEE_INVISIBLE_LIVING
+
+	//Health and life related vars
+	var/maxHealth = 100 //Maximum health that should be possible.
+	var/health = 100 	//A mob's health
+
+	var/hud_updateflag = 0
+
+	size = SIZE_NORMAL
+
+	//Damage related vars, NOTE: THESE SHOULD ONLY BE MODIFIED BY PROCS
+	var/bruteloss = 0	//Brutal damage caused by brute force (punching, being clubbed by a toolbox ect... this also accounts for pressure damage)
+	var/oxyloss = 0		//Oxygen depravation damage (no air in lungs)
+	var/toxloss = 0		//Toxic damage caused by being poisoned or radiated
+	var/fireloss = 0	//Burn damage caused by being way too hot, too cold or burnt.
+	var/cloneloss = 0	//Damage caused by being cloned or ejected from the cloner early. slimes also deal cloneloss damage to victims
+	var/brainloss = 0	//'Retardation' damage caused by someone hitting you in the head with a bible or being infected with brainrot.
+	var/halloss = 0		//Hallucination damage. 'Fake' damage obtained through hallucinating or the holodeck. Sleeping should cause it to wear off.
+
+	var/hallucination = 0 //Directly affects how long a mob will hallucinate for
+	var/list/atom/hallucinations = list() //A list of hallucinated people that try to attack the mob. See /obj/effect/fake_attacker in hallucinations.dm
+
+	var/can_butcher = 1 //Whether it's possible to butcher this mob manually
+	var/meat_taken = 0 //How much meat has been taken from this mob by butchering
+	var/meat_amount = 0 //How much meat can you take from this mob. Default value (0) will change to be the mob's size
+	var/meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	var/being_butchered = 0 //To prevent butchering an animal almost instantly
+	var/list/butchering_drops //See code/datums/butchering.dm, stuff like skinning goes here
+
+	var/mob_property_flags
+
+	var/t_plasma = null
+	var/t_oxygen = null
+	var/t_sl_gas = null
+	var/t_n2 = null
+
+	var/now_pushing = null
+	var/mob_bump_flag = 0
+	var/mob_swap_flags = 0
+	var/mob_push_flags = 0
+
+	var/tod = null // Time of death
+	var/update_slimes = 1
+
+	on_fire = 0 //The "Are we on fire?" var
+	var/fire_stacks = 0 //Tracks how many stacks of fire we have on, max is usually 20
+
+	var/specialsauce = 0 //Has this person consumed enough special sauce? IF so they're a ticking time bomb of death.
+	var/silent = null 		//Can't talk. Value goes down every life proc.
+
+	var/locked_to_z = 0 // Locked to a Z-level if nonzero.
+
+	var/list/icon/pipes_shown = list()
+	var/last_played_vent
+	var/is_ventcrawling = 0
+
+	var/species_type
+	var/holder_type = /obj/item/weapon/holder/animal	//When picked up, put us into a holder of this type. Dionae use /obj/item/weapon/holder/diona, others - the default one
+														//Set to null to prevent people from picking this mob up!
+	var/list/hud_list = list()
+
+	var/obj/abstract/screen/schematics_background
+	var/shown_schematics_background = 0
+
+	var/list/advanced_butchery //Includes a list of the tools used to butcher the mob, detectable via autopsy scanner rather than examine.
+
+	var/cap_calorie_burning_bodytemp = TRUE
+	var/calorie_burning_heat_multiplier = 1		//The heat generated from burning calories is multiplied by this value.
+	var/thermal_loss_multiplier = 1				//The heat the mob loses to the environment is multiplied by this value.
+
+	var/list/datum/disease2/disease/virus2 = list()
+	var/image/pathogen
+	var/datum/immune_system/immune_system
+
+	var/times_cloned = 0 //How many times this creature has been cloned
+	var/talkcount = 0 // How many times a creature has talked - used for determining who's been the "star" for the purposes of round end credits (may only work correctly for humans)
+
+	var/blood_color2	//color of this creature's blood for gibbing purposes (humanoids have their own species-defined values)
+	var/flesh_color2	//color of this creature's flesh for meat purposes (humanoids have their own species-defined values)
+	var/tangibility = 1 //can this mob be interacted with things hitting it and etc?
+
+	var/braindamagespeechcooldown = FALSE //used to avoid braindamage proc spamming when checking the like 80 replacements
+
+	var/list/luminosity_sources = list()

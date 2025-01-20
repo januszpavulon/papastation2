@@ -1,0 +1,468 @@
+<!--
+Title: Atmos Control UI
+Used In File(s): /code/game/machinery/alarm.dm
+-->
+<!--
+#define AALARM_MODE_SCRUBBING	1
+#define AALARM_MODE_REPLACEMENT	2 //like scrubbing, but faster.
+#define AALARM_MODE_PANIC		3 //constantly sucks all air
+#define AALARM_MODE_CYCLE		4 //sucks out all air, then refill and switches to scrubbing
+#define AALARM_MODE_FILL		5 //emergency fill
+#define AALARM_MODE_OFF			6 //Shuts it all down.
+
+#define AALARM_SCREEN_MAIN		1
+#define AALARM_SCREEN_VENT		2
+#define AALARM_SCREEN_SCRUB		3
+#define AALARM_SCREEN_MODE		4
+#define AALARM_SCREEN_SENSORS	5
+-->
+{{if !data.logged_in}}
+	<div class="line">
+		{{:helper.link('Log in', 'unlocked', {'login': 1})}}
+	</div>
+{{else}}
+	<div class="line">
+		Logged in as: <b>{{:data.login_name}}</b> {{:helper.link('Log out', 'locked', {'logout': 1}, (data.emagged) ? 'disabled' : null)}}
+	</div>
+	<!-- Presets panel. -->
+	{{if data.aca_screen == "2"}}
+		<div class="line">
+			{{:helper.link('Show Tracker Map', 'pin-s', {'reset': 1, 'showMap' : 1})}}
+			{{:helper.link('Show Detail List', 'script', {'set_screen': 1})}}
+			{{if data.bspipe_exist}}
+				{{:helper.link('Show Bluespace Caps List', 'script', {'set_screen': 3})}}
+			{{/if}}
+		</div>
+
+		<div class="line">
+			<h3>System Presets</h3>
+		</div>
+		<div class="statusDisplay">
+			{{for data.presets}}
+				<div class="line">
+					<div class="statusLabel">{{:helper.link(value.name, null, {'select_preset': value.name}, (value.name == data.selected_preset_name) ? 'selected' : null)}}</div>
+					<div class="statusValue">
+						{{:value.desc}}
+					</div>
+
+				</div>
+			{{/for}}
+			<div class="line">
+				<div class="statusLabel">
+					{{:helper.link("Add New", "plus", {"add_preset": 1})}}
+				</div>
+			</div>
+		</div>
+
+		{{if data.selected_preset}}
+			<div class="line">
+				<h3>Preset Settings</h3>
+			</div>
+			<div class="line">
+				<b><span class="red">Remember to save your changes!</span></b>
+			</div>
+			<div class="statusDisplay">
+				<table>
+					<thead>
+						<th>&nbsp;</th>
+						<th class="bad">min2</th>
+						<th class="average">min1</th>
+						<th class="average">max1</th>
+						<th class="bad">max2</th>
+					</thead>
+					<tbody>
+						{{for data.selected_preset.noteworthy_thresholds : threshold}}
+							<tr>
+								<th>{{:threshold.name}}</th>
+								<td>{{:helper.link(threshold.raw_values.min2 >= 0 ? helper.precisionRound(threshold.raw_values.min2,4) : "OFF",null,{'set_preset_setting':threshold.id,'index':1})}}</td>
+								<td>{{:helper.link(threshold.raw_values.min1 >= 0 ? helper.precisionRound(threshold.raw_values.min1,4) : "OFF",null,{'set_preset_setting':threshold.id,'index':2})}}</td>
+								<td>{{:helper.link(threshold.raw_values.max1 >= 0 ? helper.precisionRound(threshold.raw_values.max1,4) : "OFF",null,{'set_preset_setting':threshold.id,'index':3})}}</td>
+								<td>{{:helper.link(threshold.raw_values.max2 >= 0 ? helper.precisionRound(threshold.raw_values.max2,4) : "OFF",null,{'set_preset_setting':threshold.id,'index':4})}}</td>
+							</tr>
+						{{/for}}
+						<tr>
+							<th>Other Gases</th>
+							{{for data.selected_preset.other_threshold}}
+								<td>{{:helper.link(value >= 0 ? helper.precisionRound(value,4) : "OFF",null,{'set_preset_setting':'other','index':index+1})}}</td>
+							{{/for}}
+						</tr>
+						<tr>
+							<th>Pressure</th>
+							{{for data.selected_preset.pressure_threshold}}
+								<td>{{:helper.link(value >= 0 ? helper.precisionRound(value,4) : "OFF",null,{'set_preset_setting':'pressure','index':index+1})}}</td>
+							{{/for}}
+						</tr>
+						<tr>
+							<th>Temperature (K)</th>
+							{{for data.selected_preset.temperature_threshold}}
+								<td>{{:helper.link(value >= 0 ? helper.precisionRound(value,4) : "OFF",null,{'set_preset_setting':'temperature','index':index+1})}}</td>
+							{{/for}}
+						</tr>
+					</tbody>
+				</table>
+				<div class="line">
+					<div class="statusLabel">Target temperature:</div>
+					<div class="statusValue">{{:helper.link((helper.precisionRound(data.selected_preset.target_temperature - 273.15, 4))+" C", 'carat-2-n-s', {'set_preset_setting': 'target_temperature'})}}</div>
+				</div>
+				<div class="line">
+					<div class="statusLabel">Scrubbed gases:</div>
+					<div class="statusValue">
+						{{:helper.generateScrubberGasOptionsCentral(data.gas_datums, data.selected_preset.scrubbed_gases)}}
+					</div>
+				</div>
+			</div>
+			<div class="line">
+				{{:helper.link('Save', 'disk', {'save_preset_setting': 1})}}
+				{{if data.selected_preset.core}}
+					{{:helper.link('Reset', 'arrowreturn-1-w', {'reset_preset' : 1})}}
+				{{else}}
+					{{:helper.link('Edit Name/Desc.', 'gear', {'rename_preset': 1})}}
+					{{:helper.link('Delete', 'trash', {'delete_preset': 1})}}
+				{{/if}}
+				{{if data.admin_access}}
+					{{:helper.link('Batch Apply', 'arrowthick-1-n', {'apply_preset_batch': 1})}}
+				{{/if}}
+			</div>
+		{{/if}}
+	<!-- Detail list. -->
+	{{else data.aca_screen == "1"}}
+		<div class="line">
+			{{:helper.link('Show Tracker Map', 'pin-s', {'reset': 1, 'showMap' : 1})}}
+			{{if data.bspipe_exist}}
+				{{:helper.link('Show Bluespace Caps List', 'script', {'set_screen': 3})}}
+			{{/if}}
+			{{if data.admin_access}}
+				{{:helper.link('Show Presets Panel', 'gear', {'set_screen': 2})}}
+                {{:helper.link("Mass Set Mode",'alert',{'set_mass_mode': 1},null,"floatRight")}}
+			{{/if}}
+		</div>
+		{{if !data.alarm}}
+			<h3>Atmospherics Control</h3>
+			<div class="statusDisplay">
+			{{for data.alarms}}
+				<div class="line">
+					{{:helper.string("<div class='statusValue {0}'>{1}</div>",helper.dangerToClass(value.danger),value.name)}}
+					{{:helper.link("Access","gear",{"alarm":value.ID},null,"floatRight")}}
+				</div>
+			{{/for}}
+			</div>
+		{{else}}
+			{{:helper.link("Main Menu","gear",{"reset":1},null,null)}}
+
+			<h3>{{:data.name}}</h3>
+			<!-- The markup below is a direct copy/paste of air_alarm.tmpl. -->
+			{{if !data.air}}
+				<div class="notice">Unable to acquire air sample.</div>
+			{{else}}
+				<div class="statusDisplay">
+					<div class="line">
+						<div class="statusLabel">Pressure:</div>
+						{{:helper.string("<div class='statusValue {0}'>{1} kPa</div>",helper.dangerToClass(data.air.pressure_danger),helper.precisionRound(data.air.pressure,4))}}
+						<div class="statusValue" style="margin-left:5px;">
+						{{if !data.locked}}
+							{{if data.mode == 3}}
+								{{:helper.link("DEACTIVATE PANIC SYPHON",null,{"mode" : 1},null,'linkOn')}}
+							{{else}}
+								{{:helper.link("ACTIVATE PANIC SYPHON",null,{"mode" : 3},null,'red')}}
+							{{/if}}
+						{{/if}}
+						</div>
+					</div>
+					{{for data.air.noteworthy_gases}}
+						<div class="line">
+							<div class="statusLabel">{{:value.name}}:</div>
+							{{:helper.displayBar(value.percentage, 0, 100, helper.dangerToClass(value.danger))}}
+							{{:helper.string("<div class='statusValue {0}'>{1}%</div>",helper.dangerToClass(value.danger),helper.precisionRound(value.percentage,2))}}
+						</div>
+					{{/for}}
+					<div class="line">
+						<div class="statusLabel">
+							Temperature:
+						</div>
+						{{:helper.string("<div class='statusValue {0}'>{1}K ({2}&deg;C)</div>",helper.dangerToClass(data.air.temperature_danger),helper.precisionRound(data.air.temperature,2),helper.precisionRound(data.air.temperature_c,2))}}
+					</div>
+					<div class="line">
+						<div class="statusLabel">Local Status:</div>
+						{{if data.air.overall_danger == 0}}
+							{{if data.atmos_alarm}}
+								<div class="average">Caution: Atmos alert in area</div>
+							{{else}}
+								<div class="good">Optimal</div>
+							{{/if}}
+						{{else data.air.overall_danger == 1}}
+							<div class="average">Caution</div>
+						{{else}}
+							<div class="notice">DANGER: Internals Required</div>
+						{{/if}}
+						{{if !data.locked}}
+							{{if data.alarmActivated}}
+								{{:helper.link('Reset Alarm',null,{'atmos_reset':1},null,'linkOn')}}
+							{{else}}
+								{{:helper.link('Activate Alarm',null,{'atmos_alarm':1},null,'red')}}
+							{{/if}}
+							{{if data.firedoor_override}}
+								{{:helper.link('Manual override enabled', null, {'disable_override':1}, null, 'linkOn')}}
+							{{else}}
+								{{:helper.link('Manual override disabled', null, {'enable_override':1}, null, 'red')}}
+							{{/if}}
+						{{/if}}
+					</div>
+					<div class="line">
+						<!--
+						#define RCON_NO		1
+						#define RCON_AUTO	2
+						#define RCON_YES	3
+						-->
+						<div class="statusLabel">Remote Control:</div>
+						{{if !data.locked}}
+							{{:helper.link('Off',  null, {'rcon' : 1}, (data.rcon != 1) ? null : 'selected')}}
+							{{:helper.link('On',   null, {'rcon' : 2}, (data.rcon != 2) ? null : 'selected')}}
+						{{else}}
+							{{:helper.link('Off',  null, {'rcon' : 1}, (data.rcon != 1) ? 'disabled' : 'selected')}}
+							{{:helper.link('On',   null, {'rcon' : 2}, (data.rcon != 2) ? 'disabled' : 'selected')}}
+						{{/if}}
+					</div>
+					<div class="line">
+						<div class="statusLabel">Thermostat:</div>
+						{{:helper.link(data.target_temp+" C", 'carat-2-n-s', {'temperature': 1})}}
+					</div>
+				</div>
+			{{/if}}
+
+			{{if data.locked}}
+				<div class="notice">Swipe card to unlock.</div>
+			{{else}}
+				<div class="notice">Remember to lock with ID card after use.</div>
+				<div class="item">
+					<div class="itemLabel">Screen:</div>
+					<div class="itemContents">
+						{{:helper.link('Main',      'gear',{'screen':1},(data.screen==1)?'linkOn':'')}}
+						{{:helper.link('Vents',     'gear',{'screen':2},(data.screen==2)?'linkOn':'')}}
+						{{:helper.link('Scrubbers', 'gear',{'screen':3},(data.screen==3)?'linkOn':'')}}
+						{{:helper.link('Mode',      'gear',{'screen':4},(data.screen==4)?'linkOn':'')}}
+						{{:helper.link('Thresholds','gear',{'screen':5},(data.screen==5)?'linkOn':'')}}
+					</div>
+				</div>
+				<!-- VENTS -->
+				{{if data.screen == 2}}
+					<h3>Vent Pump Settings</h3>
+					{{for data.vents}}
+						<div class="statusDisplay">
+							<div class="line">
+								<b>{{>value.name}}:</b>
+							</div>
+							<div class="line">
+								<div class="statusLabelWide">Operating:</div>
+								<div class="statusValue">
+									{{:helper.link(value.power ? 'On':'Off','power',{'id_tag':value.id_tag,'command':'power','val':value.power?0:1},null,(value.power?'linkOn':'red'))}}
+									{{if value.direction==0}}
+										{{:helper.link('Siphoning','arrowthickstop-1-s',{'id_tag':value.id_tag,'command':'direction','val':'1'})}}
+									{{else}}
+										{{:helper.link('Blowing','arrowthick-1-n',{'id_tag':value.id_tag,'command':'direction','val':'0'})}}
+									{{/if}}
+								</div>
+							</div>
+							<div class="line">
+								<div class="statusLabelWide">Pressure checks:</div>
+								<div class="statusValue">
+									{{:helper.link('External','power',{'id_tag':value.id_tag,'command':'checks','val':helper.xor(value.checks,1)},null,(value.checks & 1 ?'linkOn':'red'))}}
+									{{:helper.link('Internal','power',{'id_tag':value.id_tag,'command':'checks','val':helper.xor(value.checks,2)},null,(value.checks & 2 ?'linkOn':'red'))}}
+								</div>
+							</div>
+							<div class="line">
+								<div class="statusLabelWide">External pressure target:</div>
+								<div class="statusValue">
+									{{:helper.precisionRound(value.external,4)}} kPa
+								</div>
+								{{:helper.link('Set','gear',{'id_tag':value.id_tag,'command':'set_external_pressure'})}}
+								{{:helper.link('Reset','arrowrefresh-1-n',{'id_tag':value.id_tag,'command':'set_external_pressure','val':101.325},null,'linkOn')}}
+							</div>
+							<div class="line">
+								<div class="statusLabelWide">Internal pressure target:</div>
+								<div class="statusValue">
+									{{:helper.precisionRound(value.internal,4)}} kPa
+								</div>
+								{{:helper.link('Set','gear',{'id_tag':value.id_tag,'command':'set_internal_pressure'})}}
+								{{:helper.link('Reset','arrowrefresh-1-n',{'id_tag':value.id_tag,'command':'set_internal_pressure','val':0},null,'linkOn')}}
+							</div>
+						</div>
+					{{empty}}
+						<i>No vent pumps located in this area.</i>
+					{{/for}}
+				<!-- SCRUBBERS -->
+				{{else data.screen == 3}}
+					<h3>Scrubbers</h3>
+					{{for data.scrubbers}}
+						<div class="statusDisplay">
+							<div class="line">
+								<b>{{>value.name}}:</b>
+							</div>
+							<div class="line">
+								<div class="statusLabel">Operating:</div>
+								<div class="statusValue">
+									{{:helper.link(value.power ? 'On':'Off','power',{'id_tag':value.id_tag,'command':'power','val':value.power?0:1},null,(value.power?'linkOn':'red'))}}
+								</div>
+							</div>
+							<div class="line">
+								<div class="statusLabel">Type:</div>
+								<div class="statusValue">
+									{{if value.scrubbing==0}}
+										{{:helper.link('Siphoning','arrowthickstop-1-s',{'id_tag':value.id_tag,'command':'scrubbing','val':1},null,'red')}}
+									{{else}}
+										{{:helper.link('Scrubbing','transferthick-e-w',{'id_tag':value.id_tag,'command':'scrubbing','val':0},null,'linkOn')}}
+									{{/if}}
+								</div>
+							</div>
+							{{if value.scrubbing==1}}
+							<div class="line">
+								<div class="statusLabel">Filtering:</div>
+								<div class="statusValue">
+									{{:helper.generateScrubberGasOptions(data.gas_datums, value)}}
+								</div>
+							</div>
+							{{/if}}
+							<div class="line">
+								<div class="statusLabelWide">Pressure checks:</div>
+								<div class="statusValue">
+									{{:helper.link('External','power',{'id_tag':value.id_tag,'command':'checks','val':helper.xor(value.checks,1)},null,(value.checks & 1 ?'linkOn':'red'))}}
+									{{:helper.link('Internal','power',{'id_tag':value.id_tag,'command':'checks','val':helper.xor(value.checks,2)},null,(value.checks & 2 ?'linkOn':'red'))}}
+								</div>
+							</div>
+							<div class="line">
+								<div class="statusLabelWide">External pressure target:</div>
+								<div class="statusValue">
+									{{:helper.precisionRound(value.external,4)}} kPa
+								</div>
+								{{:helper.link('Set','gear',{'id_tag':value.id_tag,'command':'set_external_pressure'})}}
+								{{:helper.link('Reset','arrowrefresh-1-n',{'id_tag':value.id_tag,'command':'set_external_pressure','val':101.325},null,'linkOn')}}
+							</div>
+							<div class="line">
+								<div class="statusLabelWide">Internal pressure target:</div>
+								<div class="statusValue">
+									{{:helper.precisionRound(value.internal,4)}} kPa
+								</div>
+								{{:helper.link('Set','gear',{'id_tag':value.id_tag,'command':'set_internal_pressure'})}}
+								{{:helper.link('Reset','arrowrefresh-1-n',{'id_tag':value.id_tag,'command':'set_internal_pressure','val':0},null,'linkOn')}}
+							</div>
+						</div>
+					{{empty}}
+						<i>No scrubbers located in this area.</i>
+					{{/for}}
+				<!-- MODES -->
+				{{else data.screen == 4}}
+					<h3>System Mode</h3>
+					<div class="statusDisplay">
+						{{for data.modes}}
+						<div class="line">
+							<div class="statusLabel">{{:helper.link(value.name,'gear',{'mode':index+1},null,(index+1==data.mode?'linkOn':''))}}</div>
+							<div class="statusValue">
+								{{:value.desc}}
+							</div>
+						</div>
+						{{/for}}
+					</div>
+					<h3>System Preset</h3>
+					<div class="line">
+						Cycle after changing preset
+						{{if data.cycle_after_preset}}
+							{{:helper.link('Yes', null, {'toggle_cycle_after_preset':1}, null, 'greenBackground')}}
+						{{else}}
+							{{:helper.link('No', null, {'toggle_cycle_after_preset':1}, null, 'redBackground')}}
+						{{/if}}
+					</div>
+					<div class="statusDisplay">
+						{{for data.presets}}
+						<div class="line">
+							<div class="statusLabel">{{:helper.link(value.name,'gear',{'preset':value.name},null,(value.name==data.preset?'linkOn':''))}}</div>
+							<div class="statusValue">
+								{{:value.desc}}
+							</div>
+						</div>
+						{{/for}}
+					</div>
+					<div class="item">
+						<div class="itemLabel">
+						Automatic Fire Suppression:
+						</div>
+						<div class="itemContent">
+							{{if data.locked && !data.siliconUser}}
+								{{if data.suppression_mode}}
+									<span class='good'>On</span>
+								{{else}}
+									<span class='bad'>Off</span>
+								{{/if}}
+							{{else}}
+								{{:helper.link('On', 'power', {'auto_suppress' : 1}, data.suppression_mode ? 'selected' : null)}}{{:helper.link('Off', 'close', {'auto_suppress' : 1}, data.suppression_mode ? null : 'selected')}}
+							{{/if}}
+						</div>
+					</div>
+				<!-- SENSORS -->
+				{{else data.screen == 5}}
+					<h3>Sensor Thresholds</h3>
+					<div class="line">
+						{{:helper.link("Reset", "arrowreturn-1-w", {'reset_thresholds':1})}}
+					</div>
+					<div class="statusDisplay">
+						<table>
+							<thead>
+								<th>&nbsp;</th>
+								<th class="bad">min2</th>
+								<th class="average">min1</th>
+								<th class="average">max1</th>
+								<th class="bad">max2</th>
+							</thead>
+							<tbody>
+								{{for data.thresholds.noteworthy_thresholds : threshold}}
+									<tr>
+										<th>{{:threshold.name}}</th>
+										<td>{{:helper.link(threshold.raw_values.min2 >= 0 ? helper.precisionRound(threshold.raw_values.min2,4) : "OFF",null,{'command':'set_threshold','env':threshold.id,'var':1})}}</td>
+										<td>{{:helper.link(threshold.raw_values.min1 >= 0 ? helper.precisionRound(threshold.raw_values.min1,4) : "OFF",null,{'command':'set_threshold','env':threshold.id,'var':2})}}</td>
+										<td>{{:helper.link(threshold.raw_values.max1 >= 0 ? helper.precisionRound(threshold.raw_values.max1,4) : "OFF",null,{'command':'set_threshold','env':threshold.id,'var':3})}}</td>
+										<td>{{:helper.link(threshold.raw_values.max2 >= 0 ? helper.precisionRound(threshold.raw_values.max2,4) : "OFF",null,{'command':'set_threshold','env':threshold.id,'var':4})}}</td>
+									</tr>
+								{{/for}}
+								<tr>
+									<th>Other Gases</th>
+									{{for data.thresholds.other_threshold}}
+										<td>{{:helper.link(value >= 0 ? helper.precisionRound(value,4) : "OFF",null,{'command':'set_threshold','env':'other','var':index+1})}}</td>
+									{{/for}}
+								</tr>
+								<tr>
+									<th>Pressure</th>
+									{{for data.thresholds.pressure_threshold}}
+										<td>{{:helper.link(value >= 0 ? helper.precisionRound(value,4) : "OFF",null,{'command':'set_threshold','env':'pressure','var':index+1})}}</td>
+									{{/for}}
+								</tr>
+								<tr>
+									<th>Temperature (K)</th>
+									{{for data.thresholds.temperature_threshold}}
+										<td>{{:helper.link(value >= 0 ? helper.precisionRound(value,4) : "OFF",null,{'command':'set_threshold','env':'temperature','var':index+1})}}</td>
+									{{/for}}
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				{{/if}}
+			{{/if}}
+			<!-- End air_alarm.tmpl copypaste -->
+		{{/if}}
+	{{else data.aca_screen == "3"}}
+		<div class="line">
+			{{:helper.link('Show Tracker Map', 'pin-s', {'reset': 1, 'showMap' : 1})}}
+			{{:helper.link('Show Detail List', 'script', {'set_screen': 1})}}
+			{{if data.admin_access}}
+				{{:helper.link('Show Presets Panel', 'gear', {'set_screen': 2})}}
+                {{:helper.link("Mass Set Mode",'alert',{'set_mass_mode': 1},null,"floatRight")}}
+			{{/if}}
+		</div>
+		<h3>Bluespace Pipes Locations</h3>
+		<div class="statusDisplay">
+		{{for data.bspipes}}
+			<div class="line">
+				{{:helper.string("<div class='statusValue good'>{0}</div>",value.name)}}
+				{{:helper.string("<div class='floatRight'>X: {0}, Y: {1}, Z: {2}</div>",value.x,value.y,value.z)}}
+			</div>
+		{{/for}}
+		</div>
+	{{/if}}
+{{/if}}

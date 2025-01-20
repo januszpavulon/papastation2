@@ -1,0 +1,123 @@
+/turf/unsimulated/wall
+	name = "riveted wall"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "riveted"
+	opacity = 1
+	density = 1
+	explosion_block = 2
+	blocks_air = 1
+	flags = TIMELESS
+	holomap_draw_override = HOLOMAP_DRAW_FULL
+	var/walltype = "riveted"
+	var/smooths = 1
+
+/turf/unsimulated/wall/isSmoothableNeighbor(atom/A, bordercheck)
+	return smooths && istype(A, src.type)
+	
+/turf/unsimulated/wall/canSmoothWith()
+	return smooths
+
+/turf/unsimulated/wall/fakeglass
+	name = "window"
+	icon_state = "fakewindows"
+	opacity = 0
+	smooths = 0
+
+/turf/unsimulated/wall/blastdoor
+	name = "Shuttle Bay Blast Door"
+	desc = "Why it no open!"
+	icon = 'icons/obj/doors/rapid_pdoor.dmi'
+	icon_state = "pdoor1"
+	smooths = 0
+
+/turf/unsimulated/wall/rock
+	name = "unnaturally hard rock wall"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "rock"
+	smooths = 0
+
+/turf/unsimulated/wall/rock/ice
+	name = "unnaturally hard ice wall"
+	icon = 'icons/turf/walls.dmi'
+	icon_state = "snow_rock"
+
+/turf/unsimulated/wall/rock/ice/New()
+	..()
+	var/image/img = image('icons/turf/rock_overlay.dmi', "snow_rock_overlay",layer = SIDE_LAYER)
+	img.pixel_x = -4*PIXEL_MULTIPLIER
+	img.pixel_y = -4*PIXEL_MULTIPLIER
+	img.plane = BELOW_TURF_PLANE
+	overlays += img
+
+/turf/unsimulated/wall/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	user.delayNextAttack(8)
+	if (!user.dexterity_check())
+		to_chat(user, "<span class='warning'>You don't have the dexterity to do this!</span>")
+		return
+	if(istype(W,/obj/item/tool/solder) && bullet_marks)
+		var/obj/item/tool/solder/S = W
+		if(!S.remove_fuel(bullet_marks*2,user))
+			return
+		playsound(loc, 'sound/items/Welder.ogg', 100, 1)
+		to_chat(user, "<span class='notice'>You remove the bullet marks with \the [W].</span>")
+		bullet_marks = 0
+		icon = initial(icon)
+
+/turf/unsimulated/wall/splashscreen
+	name = "Space Station 13"
+	icon = null
+	icon_state = null
+	plane = EFFECTS_PLANE
+	smooths = 0
+
+// Global var for fade-in
+var/icon/current_round_splashscreen
+
+/turf/unsimulated/wall/splashscreen/New()
+	if(SNOW_THEME)
+		icon = 'icons/splashworks_alt/snowstation.gif' // uses splashworks_alt folder instead of splashworks so it only appears when we want it to
+		return
+	if(SOCIALISM_WON)
+		icon = 'icons/splashworks_alt/viva.png'
+		return
+	var/path = "icons/splashworks/"
+	var/list/filenames = flist(path)
+	for(var/filename in filenames)
+		if(copytext(filename, length(filename)) == "/")
+			filenames -= filename
+	icon = file("[path][pick(filenames)]")
+	current_round_splashscreen = icon
+
+/turf/unsimulated/wall/other
+	icon_state = "r_wall"
+	smooths = 0
+
+/turf/unsimulated/wall/cult
+	name = "wall"
+	desc = "The patterns engraved on the wall seem to shift as you try to focus on them. You feel sick."
+	icon_state = "cult0"
+	opacity = 1
+	density = 1
+	smooths = 0
+
+/turf/unsimulated/wall/cultify()
+	ChangeTurf(/turf/unsimulated/wall/cult)
+	turf_animation('icons/effects/effects.dmi',"cultwall",0,0,MOB_LAYER-1, anim_plane = TURF_PLANE)
+	return
+
+/turf/unsimulated/wall/cult/cultify()
+	return
+
+/turf/unsimulated/wall/evil
+	name = "alien wall"
+	desc = "You feel a sense of dread from just looking at this wall. Its surface seems to be constantly moving, as if it were breathing."
+	icon_state = "evilwall_1"
+	opacity = 1
+	density = 1
+	smooths = 0
+
+/turf/unsimulated/wall/evil/New()
+	..()
+
+	if(prob(80))
+		icon_state = "evilwall_[rand(1,8)]"

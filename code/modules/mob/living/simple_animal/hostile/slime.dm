@@ -1,0 +1,88 @@
+/mob/living/simple_animal/hostile/slime
+	name = "rabid slime"
+	desc = "you won't be petting that one."
+	speak_emote = list("angrily chirps")
+	icon = 'icons/mob/slimes.dmi'
+	icon_state = "grey baby slime eat"
+	icon_living = "grey baby slime eat"
+	icon_dead = "grey baby slime dead"
+	health = 150
+	maxHealth = 150
+	melee_damage_lower = 10
+	melee_damage_upper = 15
+	melee_damage_type = CLONE
+	response_help  = "pets"
+	response_disarm = "shoos"
+	response_harm   = "stomps on"
+	attacktext = "glomps"
+	attack_sound = 'sound/weapons/welderattack.ogg'
+	faction = "slimesummon"
+	speed = 5
+	can_butcher = FALSE
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat/slime
+
+	colour = "grey"
+	held_items = list()
+
+/mob/living/simple_animal/hostile/slime/New()
+	..()
+	overlays = 0
+	overlays += image(icon = icon, icon_state = "bloodlust")
+
+
+/mob/living/simple_animal/hostile/slime/adult
+	health = 200
+	maxHealth = 200
+	icon_state = "grey adult slime eat"
+	icon_living = "grey adult slime eat"
+	icon_dead = "grey baby slime dead"
+
+/mob/living/simple_animal/hostile/slime/adult/New()
+	..()
+	overlays = 0
+	overlays += image(icon = icon, icon_state = "bloodlust-adult")
+
+
+/mob/living/simple_animal/hostile/slime/adult/death(var/gibbed = FALSE)
+	..(gibbed)
+	for(var/i=0;i<2;i++)
+		var/mob/living/simple_animal/hostile/slime/rabid = new /mob/living/simple_animal/hostile/slime (src.loc)
+		rabid.icon_state = "[src.colour] baby slime eat"
+		rabid.icon_living = "[src.colour] baby slime eat"
+		rabid.icon_dead = "[src.colour] baby slime dead"
+		rabid.colour = "[src.colour]"
+		for(var/mob/M in friends)
+			rabid.friends += makeweakref(M)
+	qdel(src)
+
+/mob/living/simple_animal/hostile/slime/Life()
+	if(timestopped)
+		return 0 //under effects of time magick
+	..()
+	if(bodytemperature < 273.15)
+		calm()
+
+
+/mob/living/simple_animal/hostile/slime/MoveToTarget()
+	..()
+	if(target && target.Adjacent(src))
+		forceMove(get_turf(target))
+
+/mob/living/simple_animal/hostile/slime/AttackingTarget()
+	forceMove(get_turf(target))
+	..()
+
+/mob/living/simple_animal/hostile/slime/proc/calm()
+	var/is_adult = istype(src, /mob/living/simple_animal/hostile/slime/adult)
+	var/calmed_type = is_adult ? /mob/living/carbon/slime/adult : /mob/living/carbon/slime
+	if(colour != "grey")
+		var/path_color = replacetext(colour, " ", "")
+		calmed_type = text2path("/mob/living/carbon/slime/" + path_color + (is_adult ? "/adult" : ""))
+
+	var/mob/living/carbon/slime/calmed = new calmed_type(loc)
+	for(var/datum/weakref/ref in friends)
+		var/mob/M = ref.get()
+		if (istype(M))
+			calmed.Friends = M
+
+	qdel(src)
