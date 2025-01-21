@@ -285,7 +285,7 @@ RESPAWN_AS_MOMMI
 ## Media URL.
 ## The base URL of your media library.  DO NOT ADD A SLASH AT THE END!
 ## NOTE that this must be publically-accessible.
-#MEDIA_BASE_URL http://yoursite.tld/media
+MEDIA_BASE_URL media.popestation13.pl
 
 
 ##Dectalk SERVER
@@ -301,7 +301,7 @@ RESPAWN_AS_MOMMI
 ## leave this blank.
 ##
 ##  Do NOT share this, it's like a password.
-MEDIA_SECRET_KEY srampsajaksra
+MEDIA_SECRET_KEY ojdanadana
 
 RENDERS_URL http://ss13.pomf.se/img/map-renders
 

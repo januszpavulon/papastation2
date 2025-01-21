@@ -9,7 +9,7 @@ var/global/global_playlists = list()
 	set waitfor = 0//tentative fix so the proc stops hanging if it takes too long
 	if(!config.media_base_url)
 		return
-	for(var/playlist_id in list("lilslugger", "bar", "jazzswing", "bomberman", "depresso", "echoes", "electronica", "emagged", "endgame", "filk", "funk", "folk", "idm", "malfdelta", "medbay", "metal", "muzakjazz", "nukesquad", "rap", "rock", "shoegaze", "security", "shuttle", "thunderdome", "upbeathypedancejam", "vidya", "SCOTLANDFOREVER", "halloween", "christmas"))
+	for(var/playlist_id in list("cenzo", "peja",))
 		var/url="[config.media_base_url]/index.php?playlist=[playlist_id]"
 		log_debug("Begin updating playlist: [playlist_id]...")
 
