@@ -3,12 +3,12 @@
 MAP_PLANE_MASTERS: 
 MAP_ZOOM: 1.000
 LAST_COMPILE_TIME: 1737394969
-DIR: code\datums code\game code\game\gamemodes code\game\gamemodes\events code\game\gamemodes\events\holidays code\game\objects code\game\objects\items code\game\objects\structures code\game\objects\structures\barsigns code\game\verbs code\modules code\modules\admin 
+DIR: __DEFINES code code\_onclick code\_onclick\mindUI code\controllers code\controllers\subsystem code\controllers\subsystem\init code\datums code\datums\wires code\game code\game\gamemodes code\game\gamemodes\events code\game\gamemodes\events\holidays code\game\objects code\game\objects\items code\game\objects\structures code\game\objects\structures\barsigns code\game\objects\structures\vehicles code\game\verbs code\modules code\modules\admin code\modules\admin\verbs code\modules\bomberman code\modules\client code\modules\media 
 AUTO_FILE_DIR: OFF
 MAP_ICON_TYPE: 0
 LAST_COMPILE_VERSION: 515.1647
-WINDOW: code\game\objects\items\plushies.dm;__DEFINES\setup.dm;code\datums\datumvars.dm;code\game\gamemodes\events\holidays\Holidays.dm;code\game\objects\structures\barsigns\paradise.dm;code\game\verbs\ooc.dm;code\modules\admin\admin.dm;__DEFINES\__compile_options.dm
-FILE: __DEFINES\__compile_options.dm
+WINDOW: code\game\objects\items\plushies.dm;__DEFINES\setup.dm;code\datums\datumvars.dm;code\game\gamemodes\events\holidays\Holidays.dm;code\game\objects\structures\barsigns\paradise.dm;code\game\verbs\ooc.dm;code\modules\admin\admin.dm;__DEFINES\__compile_options.dm;__DEFINES\jukebox.dm;code\_onclick\mindUI\adminbus.dm;code\controllers\shuttle_controller.dm;code\controllers\subsystem\init\more_init_stuff.dm;code\datums\wires\jukebox.dm;code\game\gamemodes\gameticker.dm;code\game\gamemodes\steal_items.dm;code\game\objects\structures\vehicles\adminbus.dm;code\game\objects\structures\vehicles\adminbus_powers.dm;code\modules\admin\verbs\playsound.dm;code\modules\bomberman\bomberman.dm;code\modules\client\preferences.dm;code\modules\media\jukebox.dm
+FILE: code\modules\media\jukebox.dm
 MAP_INSTANCE_MODE: copy
 */
 // END_INTERNALS
