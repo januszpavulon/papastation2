@@ -2,13 +2,13 @@
 /*
 MAP_PLANE_MASTERS: 
 MAP_ZOOM: 1.000
-LAST_COMPILE_TIME: 1737483979
-DIR: code code\controllers 
+LAST_COMPILE_TIME: 1737552306
+DIR: code code\controllers code\modules code\modules\media 
 AUTO_FILE_DIR: OFF
 MAP_ICON_TYPE: 0
 LAST_COMPILE_VERSION: 515.1647
-WINDOW: code\game\objects\items\plushies.dm;__DEFINES\setup.dm;code\datums\datumvars.dm;code\game\gamemodes\events\holidays\Holidays.dm;code\game\objects\structures\barsigns\paradise.dm;code\game\verbs\ooc.dm;code\modules\admin\admin.dm;code\modules\media\jukebox.dm;code\controllers\configuration.dm
-FILE: code\controllers\configuration.dm
+WINDOW: code\game\objects\items\plushies.dm;__DEFINES\setup.dm;code\datums\datumvars.dm;code\game\gamemodes\events\holidays\Holidays.dm;code\game\objects\structures\barsigns\paradise.dm;code\game\verbs\ooc.dm;code\modules\admin\admin.dm;code\game\objects\items\weapons\storage\uplink_kits.dm;code\modules\media\jukebox.dm;code\controllers\configuration.dm
+FILE: code\modules\media\jukebox.dm
 MAP_INSTANCE_MODE: copy
 */
 // END_INTERNALS

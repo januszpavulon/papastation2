@@ -837,31 +837,18 @@ var/global/list/loopModeNames=list(
 	department = "Civilian"
 	req_access = list(access_bar)
 
-	playlist_id="bar"
+	playlist_id="cenzo"
 	// Must be defined on your server.
 	playlists=list(
-		"lilslugger" = "Battle of Lil Slugger",
-		"bar"  = "Bar Mix",
-		"jazzswing" = "Jazz & Swing",
-		"depresso" ="Depresso",
-		"electronica" = "Electronica",
-		"funk" = "Funk",
-		"folk" = "Folk",
-		"medbay" = "Medbay",
-		"metal" = "Heavy Metal",
-		"rap" = "Rap",
-		"rock" = "Rock",
-		"shoegaze" = "Shoegaze",
-		"security" = "Security",
-		"vidya" = "Video Games",
-		"upbeathypedancejam" = "Dance"
+		"cenzo" = "CenzoHity",
+		"peja"  = "Rychu Peja",
 	)
 
 
 // Relaxing elevator music~
 /obj/machinery/media/jukebox/dj
 
-	playlist_id="muzakjazz"
+	playlist_id="peja"
 	autoplay = 1
 	change_cost = 0
 
@@ -869,24 +856,8 @@ var/global/list/loopModeNames=list(
 
 	// Must be defined on your server.
 	playlists=list(
-		"bar"  = "Bar Mix",
-		"jazzswing" = "Jazz & Swing",
-		"depresso" ="Depresso",
-		"electronica" = "Electronica",
-		"filk" = "Filk",
-		"funk" = "Funk",
-		"folk" = "Folk",
-		"idm" = "90's IDM",
-		"medbay" = "Medbay",
-		"metal" = "Heavy Metal",
-		"muzakjazz" = "Muzak",
-		"rap" = "Rap",
-		"rock" = "Rock",
-		"shoegaze" = "Shoegaze",
-		"security" = "Security",
-		"upbeathypedancejam" = "Dance",
-		"vidya" = "Video Games",
-		"thunderdome" = "Thunderdome"
+		"cenzo"  = "CenzoHity",
+		"peja" = "Rychu Peja",
 	)
 
 // So I don't have to do all this shit manually every time someone sacrifices pun-pun.
@@ -903,39 +874,11 @@ var/global/list/loopModeNames=list(
 	light_power_on = 2
 	light_color = "#3366FF"
 
-	playlist_id="bar"
+	playlist_id="cenzo"
 	// Must be defined on your server.
 	playlists=list(
-		"lilslugger" = "Battle of Lil' Slugger",
-		"bar"  = "Bar Mix",
-		"jazzswing" = "Jazz & Swing",
-		"depresso" ="Depresso",
-		"electronica" = "Electronica",
-		"filk" = "Filk",
-		"funk" = "Funk",
-		"folk" = "Folk",
-		"idm" = "90's IDM",
-		"medbay" = "Medbay",
-		"metal" = "Heavy Metal",
-		"muzakjazz" = "Muzak",
-		"rap" = "Rap",
-		"rock" = "Rock",
-		"shoegaze" = "Shoegaze",
-		"shuttle" = "Shuttle",
-		"security" = "Security",
-		"upbeathypedancejam" = "Dance",
-		"vidya" = "Video Games",
-		"thunderdome" = "Thunderdome",
-		"emagged" ="Syndicate Mix",
-		"shuttle"= "Shuttle",
-		"halloween" = "Halloween",
-		"christmas" = "Christmas Jingles",
-		"endgame" = "Apocalypse",
-		"nukesquad" = "Syndicate Assault",
-		"malfdelta"= "Silicon Assault",
-		"bomberman" = "Bomberman",
-		"SCOTLANDFOREVER"= "Highlander",
-		"echoes" = "Echoes"
+		"cenzo"  = "CenzoHity",
+		"peja" = "Rychu Peja",
 	)
 
 /obj/machinery/media/jukebox/superjuke/New()
@@ -1063,10 +1006,10 @@ var/global/list/loopModeNames=list(
 
 	change_cost = 0
 
-	playlist_id="holy"
+	playlist_id="cenzo"
 	// Must be defined on your server.
 	playlists=list(
-		"holy" = "Pastor's Paradise"
+		"cenzo" = "CenzoHity"
 	)
 
 /obj/machinery/media/jukebox/holyjuke/update_icon()
@@ -1118,134 +1061,13 @@ var/global/list/loopModeNames=list(
 
 //Premades
 /obj/item/weapon/vinyl/bar
-	name = "nanovinyl - bar"
-	unformatted = "bar"
-	formatted = "Bar"
-	mask = "#800000"//maroon
+	name = "nanovinyl - cenzo"
+	unformatted = "cenzo"
+	formatted = "Cenzo"
+	mask = "#FFF200"//maroon
 /obj/item/weapon/vinyl/bomberman
-	name = "nanovinyl - bomberman"
-	unformatted = "bomberman"
-	formatted = "Bomberman"
-	mask = "#00FFFF"//cyan
-/obj/item/weapon/vinyl/depresso
-	name = "nanovinyl - depresso"
-	unformatted = "depresso"
-	formatted = "Depresso"
-	mask = "#000000"//black
-/obj/item/weapon/vinyl/echoes
-	name = "nanovinyl - echoes"
-	unformatted = "echoes"
-	formatted = "Echoes"
-/obj/item/weapon/vinyl/electronica
-	name = "nanovinyl - electronic"
-	unformatted = "electronica"
-	formatted = "Electronic"
-	mask = "#FFFFFF"//white
-/obj/item/weapon/vinyl/emagged
-	name = "nanovinyl - syndicate"
-	unformatted = "emagged"
-	formatted = "Syndicate Mix"
-/obj/item/weapon/vinyl/endgame
-	name = "nanovinyl - apocalypse"
-	unformatted = "endgame"
-	formatted = "Apocalypse"
-/obj/item/weapon/vinyl/filk
-	name = "nanovinyl - filk"
-	unformatted = "filk"
-	formatted = "Filk"
-/obj/item/weapon/vinyl/funk
-	name = "nanovinyl - funk"
-	unformatted = "funk"
-	formatted = "Funk"
-/obj/item/weapon/vinyl/folk
-	name = "nanovinyl - folk"
-	unformatted = "folk"
-	formatted = "Folk"
-/obj/item/weapon/vinyl/idm
-	name = "nanovinyl - 90's IDM"
-	unformatted = "idm"
-	formatted = "90's IDM"
-/obj/item/weapon/vinyl/jazz
-	name = "nanovinyl - jazz & swing"
-	unformatted = "jazzswing"
-	formatted = "Jazz & Swing"
-/obj/item/weapon/vinyl/malf
-	name = "nanovinyl - silicon assault"
-	unformatted = "malfdelta"
-	formatted = "Silicon Assault"
-/obj/item/weapon/vinyl/medbay
-	name = "nanovinyl - medbay"
-	unformatted = "medbay"
-	formatted = "Medbay"
-/obj/item/weapon/vinyl/metal
-	name = "nanovinyl - heavy metal"
-	unformatted = "metal"
-	formatted = "Heavy Metal"
-/obj/item/weapon/vinyl/muzakjazz
-	name = "nanovinyl - jazzy muzak"
-	unformatted = "muzakjazz"
-	formatted = "Muzak"
-/obj/item/weapon/vinyl/syndie_assault
-	name = "nanovinyl - syndicate assault"
-	unformatted = "nukesquad"
-	formatted = "Syndicate Assault"
-/obj/item/weapon/vinyl/rap
-	name = "nanovinyl - rap"
-	unformatted = "rap"
-	formatted = "Rap"
-/obj/item/weapon/vinyl/rock
-	name = "nanovinyl - rock"
-	unformatted = "rock"
-	formatted = "Rock"
-/obj/item/weapon/vinyl/shoegaze
-	name = "nanovinyl - shoegaze"
-	desc = "More reverb than you can handle."
-	unformatted = "shoegaze"
-	formatted = "Shoegaze"
-	mask = "#FF00FF"//magenta
-/obj/item/weapon/vinyl/security
-	name = "nanovinyl - security"
-	unformatted = "security"
-	formatted = "Security"
-/obj/item/weapon/vinyl/shuttle
-	name = "nanovinyl - shuttle"
-	unformatted = "shuttle"
-	formatted = "Shuttle"
-	mask = "#000080"//navy
-/obj/item/weapon/vinyl/thunderdome
-	name = "nanovinyl - thunderdome"
-	unformatted = "thunderdome"
-	formatted =	"Thunderdome"
-/obj/item/weapon/vinyl/upbeat_dance
-	name = "nanovinyl - dance"
-	unformatted = "upbeathypedancejam"
-	formatted = "Dance"
-/obj/item/weapon/vinyl/vidya
-	name = "nanovynil - vidya"
-	unformatted = "vidya"
-	formatted = "Video Games"
-	mask = "##0096FF"
-/obj/item/weapon/vinyl/scotland
-	name = "nanovinyl - highlander"
-	desc = "Oh no."
-	unformatted = "SCOTLANDFOREVER"
-	formatted = "Highlander"
-	mask = "#0000FF"//blue
-/obj/item/weapon/vinyl/halloween
-	name = "nanovinyl - halloween"
-	unformatted = "halloween"
-	formatted = "Halloween"
-/obj/item/weapon/vinyl/slugger
-	name = "nanovynil - slugger"
-	desc = "A go-to for bars all over the sector. Every time you walk in one, you can almost bet it's playing."
-	unformatted = "lilslugger"
-	formatted = "Battle of Lil Slugger"
-/obj/item/weapon/vinyl/christmas
-	name = "nanovynil - christmas"
-	unformatted = "christmas"
-	formatted = "Christmas Jingles"
-/obj/item/weapon/vinyl/holy
-	name = "nanovinyl - holy"
-	unformatted = "holy"
-	formatted = "Holy"
-	mask = "#8000FF"//purple
+	name = "nanovinyl - peja"
+	unformatted = "peja"
+	formatted = "Peja"
+	mask = "#FFAE00"//cyan
+

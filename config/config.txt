@@ -285,7 +285,8 @@ RESPAWN_AS_MOMMI
 ## Media URL.
 ## The base URL of your media library.  DO NOT ADD A SLASH AT THE END!
 ## NOTE that this must be publically-accessible.
-MEDIA_BASE_URL media.popestation13.pl
+MEDIA_BASE_URL dupa
+
 
 
 ##Dectalk SERVER

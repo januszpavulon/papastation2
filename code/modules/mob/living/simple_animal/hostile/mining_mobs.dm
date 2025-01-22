@@ -952,9 +952,6 @@
 		for(var/i = 0 to rand(3,9))
 			new possessed_ore(src.loc)
 
-	if(prob(1))
-		new /obj/item/weapon/vinyl/rock(src.loc) //It is a rock monster after all
-
 	for(var/i = 0 to rand(0,3))
 		new /obj/item/weapon/strangerock(src.loc, get_random_find())
 	new /obj/structure/boulder(src.loc)
@@ -986,8 +983,6 @@
 	if(possessed_ore)
 		for(var/i = 0 to rand(24,46))
 			new possessed_ore(src.loc)
-
-	new /obj/item/weapon/vinyl/filk(src.loc) //The music of the asteroid~
 
 	for(var/i = 0 to rand(5,13))
 		new /obj/item/weapon/strangerock(src.loc, get_random_find())
